@@ -1,4 +1,5 @@
 const { getAuth } = require('../_lib/auth');
+const { getAdminEmail } = require('../_lib/admin-credentials');
 
 module.exports = async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
@@ -14,6 +15,12 @@ module.exports = async (req, res) => {
     return res.end(JSON.stringify({ error: 'Not signed in' }));
   }
 
+  const adminEmail = getAdminEmail();
+  const emailLower = String(auth.email || '').trim().toLowerCase();
+  const canSwitchToAdmin =
+    auth.role === 'customer' && emailLower === adminEmail;
+  const canSwitchToCustomer = auth.role === 'admin';
+
   res.statusCode = 200;
   return res.end(
     JSON.stringify({
@@ -22,6 +29,8 @@ module.exports = async (req, res) => {
         role: auth.role,
         phone: auth.phone || '',
         name: auth.name || '',
+        canSwitchToAdmin: canSwitchToAdmin,
+        canSwitchToCustomer: canSwitchToCustomer,
       },
     })
   );

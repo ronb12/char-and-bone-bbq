@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const { parseJsonBody, signAuthToken, setAuthCookie } = require('../_lib/auth');
+const { getAdminEmail, getAdminPasswordHash } = require('../_lib/admin-credentials');
 
 module.exports = async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
@@ -17,18 +18,8 @@ module.exports = async (req, res) => {
   const body = parseJsonBody(req);
   const email = String(body.email || '').trim().toLowerCase();
   const password = String(body.password || '');
-  const adminEmail = String(process.env.ADMIN_EMAIL || '').trim().toLowerCase();
-  const hash = process.env.ADMIN_PASSWORD_HASH || '';
-
-  if (!adminEmail || !hash) {
-    res.statusCode = 503;
-    return res.end(
-      JSON.stringify({
-        error:
-          'Admin login is not configured. Set ADMIN_EMAIL and ADMIN_PASSWORD_HASH (bcrypt) in Vercel.',
-      })
-    );
-  }
+  const adminEmail = getAdminEmail();
+  const hash = getAdminPasswordHash();
 
   if (!email || !password) {
     res.statusCode = 400;

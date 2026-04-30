@@ -121,6 +121,58 @@
       });
   }
 
+  function wireAdminSwitch() {
+    var wrap = document.getElementById('portal-admin-switch');
+    var pass = document.getElementById('portal-switch-admin-password');
+    var btn = document.getElementById('portal-switch-admin-btn');
+    var errEl = document.getElementById('portal-switch-admin-error');
+    if (!wrap || !pass || !btn) return;
+    btn.addEventListener('click', function () {
+      if (errEl) {
+        errEl.style.display = 'none';
+        errEl.textContent = '';
+      }
+      var password = pass.value;
+      if (!password) {
+        if (errEl) {
+          errEl.textContent = 'Enter your admin password';
+          errEl.style.display = 'block';
+        }
+        return;
+      }
+      btn.disabled = true;
+      fetch('/api/auth/switch-to-admin', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: password }),
+      })
+        .then(function (r) {
+          return r.json().then(function (j) {
+            return { ok: r.ok, body: j };
+          });
+        })
+        .then(function (res) {
+          btn.disabled = false;
+          if (res.ok) {
+            window.location.href = '/admin/';
+            return;
+          }
+          if (errEl) {
+            errEl.textContent = (res.body && res.body.error) || 'Could not switch';
+            errEl.style.display = 'block';
+          }
+        })
+        .catch(function () {
+          btn.disabled = false;
+          if (errEl) {
+            errEl.textContent = 'Network error';
+            errEl.style.display = 'block';
+          }
+        });
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     var out = document.getElementById('portal-signout');
     if (out) {
@@ -138,11 +190,25 @@
         });
       })
       .then(function (res) {
-        if (!res.ok || !res.body.user || res.body.user.role !== 'customer') {
+        if (!res.ok || !res.body.user) {
           window.location.href = '/customer-portal';
           return;
         }
-        renderWithUser(res.body.user);
+        var user = res.body.user;
+        if (user.role === 'admin') {
+          window.location.href = '/admin/';
+          return;
+        }
+        if (user.role !== 'customer') {
+          window.location.href = '/customer-portal';
+          return;
+        }
+        if (user.canSwitchToAdmin) {
+          var sw = document.getElementById('portal-admin-switch');
+          if (sw) sw.style.display = 'block';
+          wireAdminSwitch();
+        }
+        renderWithUser(user);
       })
       .catch(function () {
         window.location.href = '/customer-portal';

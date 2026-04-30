@@ -3,6 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#1a1410">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Char & Bone">
   <title>Customer portal — Char &amp; Bone BBQ</title>
   <meta name="description" content="Your Char &amp; Bone BBQ order history and reorder.">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
@@ -22,15 +30,27 @@
   <main class="section" style="max-width:900px;text-align:left;margin-top:1rem">
     <h1 style="margin-top:0">Customer portal</h1>
     <p id="portal-meta" class="muted"></p>
+    <div id="portal-admin-switch" class="portal-admin-switch" style="display:none">
+      <p class="muted small" style="margin:0 0 0.75rem">Staff: switch to the admin dashboard.</p>
+      <div class="form-grid" style="gap:0.5rem;max-width:320px">
+        <label style="margin:0">Admin password
+          <input type="password" id="portal-switch-admin-password" autocomplete="current-password">
+        </label>
+        <button type="button" class="btn btn-secondary btn-sm" id="portal-switch-admin-btn">Switch to admin</button>
+      </div>
+      <p id="portal-switch-admin-error" class="alert alert-error" style="display:none;margin-top:0.75rem;margin-bottom:0"></p>
+    </div>
     <div id="portal-root"></div>
     <p style="margin-top:1.5rem"><a class="btn btn-primary" href="/order">Order again</a></p>
   </main>
 
   <footer class="site-footer">
     &copy; Char &amp; Bone BBQ
+    <div class="footer-legal"><a href="/terms">Terms of Service</a> · <a href="/privacy">Privacy Policy</a></div>
   </footer>
 
   <script src="/js/cart.js"></script>
   <script src="/js/portal-app.js"></script>
+  <script src="/js/pwa-register.js" defer></script>
 </body>
 </html>

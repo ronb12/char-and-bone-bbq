@@ -1,0 +1,59 @@
+{
+  "id": "/",
+  "name": "Char & Bone BBQ",
+  "short_name": "Char & Bone",
+  "description": "Slow-smoked BBQ — order pickup or delivery in Columbia, SC.",
+  "lang": "en-US",
+  "dir": "ltr",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "browser"],
+  "orientation": "portrait-primary",
+  "background_color": "#f4ede4",
+  "theme_color": "#1a1410",
+  "categories": ["food", "shopping"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Order online",
+      "short_name": "Order",
+      "description": "Browse the menu and build your order",
+      "url": "/order?source=pwa",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Checkout",
+      "short_name": "Checkout",
+      "description": "Open checkout",
+      "url": "/checkout?source=pwa",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Customer portal",
+      "short_name": "Portal",
+      "description": "Sign in to your account",
+      "url": "/customer-portal?source=pwa",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ]
+}

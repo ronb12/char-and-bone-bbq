@@ -3,35 +3,142 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin — Orders — Char &amp; Bone BBQ</title>
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#1a1410">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Char & Bone">
+  <title>Admin — Operations — Char &amp; Bone BBQ</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/site.css">
 </head>
-<body>
+<body class="admin-body">
   <header class="site-header">
     <span class="logo">Char &amp; Bone BBQ · Admin</span>
     <nav>
-      <a href="/">Site</a>
-      <a href="/order">Menu</a>
-      <button type="button" class="btn btn-secondary btn-sm" id="admin-refresh">Refresh</button>
+      <a href="/">Live site</a>
+      <a href="/order" target="_blank" rel="noopener">Menu (new tab)</a>
+      <button type="button" class="btn btn-secondary btn-sm" id="admin-refresh">Refresh data</button>
+      <button type="button" class="btn btn-ghost btn-sm" id="admin-switch-customer" style="color:var(--cream);border-color:rgba(255,255,255,0.35)">Customer portal</button>
       <a href="/admin/login" id="admin-logout-link">Sign out</a>
     </nav>
   </header>
 
-  <main class="section" style="max-width:1100px;text-align:left;margin-top:1rem">
-    <h1 style="margin-top:0">Orders</h1>
-    <p class="muted">Update status as the pit progresses. Connect <strong>Vercel KV / Redis</strong> so orders from all customers appear here; otherwise the list may be empty.</p>
-    <div id="admin-dashboard-root"></div>
-    <div id="admin-detail-panel" class="admin-detail-panel" style="display:none"></div>
+  <main class="admin-page section">
+    <div class="admin-page-head">
+      <div>
+        <h1 class="admin-page-title">Operations dashboard</h1>
+        <p class="muted admin-subtitle">Orders, pit queue, and shift tools. Data syncs from cloud when KV/Redis is connected.</p>
+      </div>
+      <p class="admin-last-sync muted small" id="admin-last-sync" aria-live="polite"></p>
+    </div>
+
+    <div class="admin-dashboard-grid">
+      <div class="admin-dashboard-main">
+        <section class="admin-card" aria-labelledby="admin-metrics-heading">
+          <h2 id="admin-metrics-heading" class="admin-card-title">Today</h2>
+          <div id="admin-metrics" class="admin-metric-grid"></div>
+        </section>
+
+        <section class="admin-card">
+          <h2 class="admin-card-title">Pit queue</h2>
+          <p class="muted small admin-card-lede">Paid and in prep — work top to bottom</p>
+          <div id="admin-prep-queue"></div>
+        </section>
+
+        <section class="admin-card admin-card--orders">
+          <div class="admin-toolbar">
+            <h2 class="admin-card-title admin-toolbar-title">All orders</h2>
+            <div class="admin-toolbar-actions">
+              <label class="admin-filter">
+                <span class="admin-filter-label">Status</span>
+                <select id="admin-filter-status" class="admin-select">
+                  <option value="">All statuses</option>
+                  <option value="placed">placed</option>
+                  <option value="pending_payment">pending_payment</option>
+                  <option value="paid">paid</option>
+                  <option value="preparing">preparing</option>
+                  <option value="ready">ready</option>
+                  <option value="completed">completed</option>
+                  <option value="cancelled">cancelled</option>
+                </select>
+              </label>
+              <label class="admin-filter">
+                <span class="admin-filter-label">Search</span>
+                <input type="search" id="admin-search" class="admin-input" placeholder="Ref, name, phone, email" autocomplete="off">
+              </label>
+              <button type="button" class="btn btn-secondary btn-sm" id="admin-export-csv">Export CSV</button>
+            </div>
+          </div>
+          <div id="admin-orders-table-root"></div>
+        </section>
+      </div>
+
+      <aside class="admin-dashboard-aside">
+        <section class="admin-card">
+          <h2 class="admin-card-title">Shift</h2>
+          <label class="admin-toggle">
+            <input type="checkbox" id="admin-accepting-orders" checked>
+            <span>We are accepting online orders today</span>
+          </label>
+          <p class="muted small" style="margin:0.5rem 0 0">Uncheck if you need to pause the line; still update the live site or hours so guests know.</p>
+          <label class="admin-notes-label" style="margin-top:1rem">
+            <span class="admin-filter-label">Kitchen / shift notes</span>
+            <textarea id="admin-kitchen-notes" class="admin-textarea" rows="5" placeholder="86 list, catering holds, who’s on pit…"></textarea>
+          </label>
+          <p class="muted small" id="admin-notes-saved" style="margin:0.35rem 0 0;min-height:1.2em" aria-live="polite"></p>
+        </section>
+
+        <section class="admin-card">
+          <h2 class="admin-card-title">Quick links</h2>
+          <ul class="admin-link-list">
+            <li><a href="/order" target="_blank" rel="noopener">Customer menu &amp; cart</a></li>
+            <li><a href="/checkout" target="_blank" rel="noopener">Checkout page</a></li>
+            <li><a href="/menu.json" target="_blank" rel="noopener">Menu data (JSON)</a></li>
+            <li><a href="https://vercel.com/dashboard" target="_blank" rel="noopener">Vercel dashboard</a></li>
+            <li><a href="https://dashboard.stripe.com" target="_blank" rel="noopener">Stripe dashboard</a></li>
+          </ul>
+        </section>
+
+        <section class="admin-card">
+          <h2 class="admin-card-title">System</h2>
+          <div id="admin-system-status" class="admin-system-lines"></div>
+        </section>
+      </aside>
+    </div>
+
+    <div id="admin-detail-panel" class="admin-detail-panel" style="display:none" role="dialog" aria-modal="true" aria-label="Order detail"></div>
   </main>
 
   <footer class="site-footer">
     &copy; Char &amp; Bone BBQ · Admin
+    <div class="footer-legal"><a href="/terms">Terms</a> · <a href="/privacy">Privacy</a></div>
   </footer>
 
   <script src="/js/cart.js"></script>
   <script src="/js/admin-dashboard.js"></script>
   <script>
+    document.getElementById('admin-switch-customer').addEventListener('click', function () {
+      fetch('/api/auth/switch-to-customer', { method: 'POST', credentials: 'include' })
+        .then(function (r) {
+          return r.json().then(function (j) {
+            return { ok: r.ok, body: j };
+          });
+        })
+        .then(function (res) {
+          if (res.ok) {
+            window.location.href = '/portal';
+            return;
+          }
+          alert((res.body && res.body.error) || 'Could not switch to customer portal');
+        })
+        .catch(function () {
+          alert('Network error');
+        });
+    });
     document.getElementById('admin-logout-link').addEventListener('click', function (e) {
       e.preventDefault();
       fetch('/api/auth/logout', { method: 'POST', credentials: 'include' }).finally(function () {
@@ -39,5 +146,6 @@
       });
     });
   </script>
+  <script src="/js/pwa-register.js" defer></script>
 </body>
 </html>

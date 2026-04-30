@@ -3,6 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#1a1410">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Char & Bone">
   <title>Admin sign in — Char &amp; Bone BBQ</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/site.css">
@@ -19,7 +27,6 @@
 
   <main class="section" style="max-width:420px;margin:2rem auto">
     <h1 style="margin-top:0">Admin</h1>
-    <p class="muted">Staff sign-in. Configure <strong>AUTH_SECRET</strong>, <strong>ADMIN_EMAIL</strong>, and <strong>ADMIN_PASSWORD_HASH</strong> (bcrypt) in Vercel project settings.</p>
 
     <div id="admin-login-error" class="alert alert-error" style="display:none;margin-top:1rem"></div>
 
@@ -34,11 +41,11 @@
       </label>
       <button type="submit" class="btn btn-primary btn-block">Sign in</button>
     </form>
-    <p class="muted small" style="margin-top:1.5rem">Generate a hash locally: <code>node -e "require('bcryptjs').hash('your-password',10).then(console.log)"</code> and paste the result into <code>ADMIN_PASSWORD_HASH</code>.</p>
   </main>
 
   <footer class="site-footer">
     &copy; Char &amp; Bone BBQ
+    <div class="footer-legal"><a href="/terms">Terms</a> · <a href="/privacy">Privacy</a></div>
   </footer>
 
   <script>
@@ -76,5 +83,6 @@
       });
     })();
   </script>
+  <script src="/js/pwa-register.js" defer></script>
 </body>
 </html>
