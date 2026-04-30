@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer portal — Sign in — Char &amp; Bone BBQ</title>
+  <meta name="description" content="Sign in to view your Char &amp; Bone BBQ orders and reorder.">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+  <header class="site-header">
+    <span class="logo">Char &amp; Bone BBQ</span>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/order">Menu</a>
+      <a href="/checkout">Checkout</a>
+      <a href="/customer-portal" aria-current="page">Customer portal</a>
+    </nav>
+  </header>
+
+  <main class="section" style="max-width:420px;margin:2rem auto">
+    <h1 style="margin-top:0">Customer portal</h1>
+    <p class="muted">Sign in with your account email and password. New here? <a href="/portal/register">Create an account</a> (requires cloud storage on the site).</p>
+
+    <div id="portal-login-error" class="alert alert-error" style="display:none;margin-top:1rem"></div>
+
+    <form id="portal-login-form" class="form-grid" style="margin-top:1.5rem">
+      <label>
+        Email
+        <input type="email" id="portal-email" required autocomplete="email">
+      </label>
+      <label>
+        Password
+        <input type="password" id="portal-password" required autocomplete="current-password">
+      </label>
+      <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+    </form>
+    <p class="muted small" style="margin-top:1rem"><a href="/portal/register">Register</a> · Use the same email at checkout so orders appear in your history.</p>
+  </main>
+
+  <footer class="site-footer">
+    &copy; Char &amp; Bone BBQ
+  </footer>
+
+  <script>
+    (function () {
+      var form = document.getElementById('portal-login-form');
+      var err = document.getElementById('portal-login-error');
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        err.style.display = 'none';
+        var email = document.getElementById('portal-email').value.trim();
+        var password = document.getElementById('portal-password').value;
+        fetch('/api/auth/customer-login', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email, password: password }),
+        })
+          .then(function (r) {
+            return r.json().then(function (j) {
+              return { ok: r.ok, body: j };
+            });
+          })
+          .then(function (res) {
+            if (res.ok) {
+              window.location.href = '/portal';
+              return;
+            }
+            err.textContent = (res.body && res.body.error) || 'Sign in failed';
+            err.style.display = 'block';
+          })
+          .catch(function () {
+            err.textContent = 'Network error';
+            err.style.display = 'block';
+          });
+      });
+    })();
+  </script>
+</body>
+</html>

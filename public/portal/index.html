@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer portal — Char &amp; Bone BBQ</title>
+  <meta name="description" content="Your Char &amp; Bone BBQ order history and reorder.">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+  <header class="site-header">
+    <span class="logo">Char &amp; Bone BBQ</span>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/order">Menu</a>
+      <a href="/customer-portal" aria-current="page">Customer portal</a>
+      <button type="button" class="btn btn-ghost btn-sm" id="portal-signout" style="color:var(--cream);border-color:rgba(255,255,255,0.35)">Sign out</button>
+    </nav>
+  </header>
+
+  <main class="section" style="max-width:900px;text-align:left;margin-top:1rem">
+    <h1 style="margin-top:0">Customer portal</h1>
+    <p id="portal-meta" class="muted"></p>
+    <div id="portal-root"></div>
+    <p style="margin-top:1.5rem"><a class="btn btn-primary" href="/order">Order again</a></p>
+  </main>
+
+  <footer class="site-footer">
+    &copy; Char &amp; Bone BBQ
+  </footer>
+
+  <script src="/js/cart.js"></script>
+  <script src="/js/portal-app.js"></script>
+</body>
+</html>

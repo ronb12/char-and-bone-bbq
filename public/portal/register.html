@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create account — Char &amp; Bone BBQ</title>
+  <meta name="description" content="Create a Char &amp; Bone BBQ customer account to view orders and reorder.">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+  <header class="site-header">
+    <span class="logo">Char &amp; Bone BBQ</span>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/order">Menu</a>
+      <a href="/customer-portal">Sign in</a>
+    </nav>
+  </header>
+
+  <main class="section" style="max-width:420px;margin:2rem auto">
+    <h1 style="margin-top:0">Create account</h1>
+    <p class="muted">Registration needs <strong>Vercel KV or Redis</strong> on this project. Use the same email and phone you’ll use at checkout.</p>
+
+    <div id="portal-register-error" class="alert alert-error" style="display:none;margin-top:1rem"></div>
+
+    <form id="portal-register-form" class="form-grid" style="margin-top:1.5rem">
+      <label>
+        Name
+        <input type="text" id="reg-name" name="name" autocomplete="name">
+      </label>
+      <label>
+        Email
+        <input type="email" id="reg-email" required autocomplete="email">
+      </label>
+      <label>
+        Phone
+        <input type="tel" id="reg-phone" required autocomplete="tel" placeholder="For pickup / contact">
+      </label>
+      <label>
+        Password
+        <input type="password" id="reg-password" required autocomplete="new-password" minlength="8">
+      </label>
+      <label>
+        Confirm password
+        <input type="password" id="reg-password2" required autocomplete="new-password" minlength="8">
+      </label>
+      <button type="submit" class="btn btn-primary btn-block">Create account</button>
+    </form>
+    <p class="muted small" style="margin-top:1rem">Already have an account? <a href="/customer-portal">Sign in</a></p>
+  </main>
+
+  <footer class="site-footer">
+    &copy; Char &amp; Bone BBQ
+  </footer>
+
+  <script>
+    (function () {
+      var form = document.getElementById('portal-register-form');
+      var err = document.getElementById('portal-register-error');
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        err.style.display = 'none';
+        var name = document.getElementById('reg-name').value.trim();
+        var email = document.getElementById('reg-email').value.trim();
+        var phone = document.getElementById('reg-phone').value.trim();
+        var password = document.getElementById('reg-password').value;
+        var password2 = document.getElementById('reg-password2').value;
+        if (password !== password2) {
+          err.textContent = 'Passwords do not match';
+          err.style.display = 'block';
+          return;
+        }
+        fetch('/api/auth/customer-register', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            phone: phone,
+            password: password,
+            passwordConfirm: password2,
+          }),
+        })
+          .then(function (r) {
+            return r.json().then(function (j) {
+              return { ok: r.ok, body: j };
+            });
+          })
+          .then(function (res) {
+            if (res.ok) {
+              window.location.href = '/portal';
+              return;
+            }
+            err.textContent = (res.body && res.body.error) || 'Registration failed';
+            err.style.display = 'block';
+          })
+          .catch(function () {
+            err.textContent = 'Network error';
+            err.style.display = 'block';
+          });
+      });
+    })();
+  </script>
+</body>
+</html>

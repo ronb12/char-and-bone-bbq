@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Orders — Char &amp; Bone BBQ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+  <header class="site-header">
+    <span class="logo">Char &amp; Bone BBQ · Admin</span>
+    <nav>
+      <a href="/">Site</a>
+      <a href="/order">Menu</a>
+      <button type="button" class="btn btn-secondary btn-sm" id="admin-refresh">Refresh</button>
+      <a href="/admin/login" id="admin-logout-link">Sign out</a>
+    </nav>
+  </header>
+
+  <main class="section" style="max-width:1100px;text-align:left;margin-top:1rem">
+    <h1 style="margin-top:0">Orders</h1>
+    <p class="muted">Update status as the pit progresses. Connect <strong>Vercel KV / Redis</strong> so orders from all customers appear here; otherwise the list may be empty.</p>
+    <div id="admin-dashboard-root"></div>
+    <div id="admin-detail-panel" class="admin-detail-panel" style="display:none"></div>
+  </main>
+
+  <footer class="site-footer">
+    &copy; Char &amp; Bone BBQ · Admin
+  </footer>
+
+  <script src="/js/cart.js"></script>
+  <script src="/js/admin-dashboard.js"></script>
+  <script>
+    document.getElementById('admin-logout-link').addEventListener('click', function (e) {
+      e.preventDefault();
+      fetch('/api/auth/logout', { method: 'POST', credentials: 'include' }).finally(function () {
+        window.location.href = '/admin/login';
+      });
+    });
+  </script>
+</body>
+</html>

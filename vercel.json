@@ -1,0 +1,13 @@
+{
+  "rewrites": [
+    { "source": "/order", "destination": "/order.html" },
+    { "source": "/checkout", "destination": "/checkout.html" },
+    { "source": "/confirmation", "destination": "/confirmation.html" },
+    { "source": "/admin/login", "destination": "/admin/login.html" },
+    { "source": "/admin", "destination": "/admin/index.html" },
+    { "source": "/customer-portal", "destination": "/portal/login.html" },
+    { "source": "/portal/login", "destination": "/portal/login.html" },
+    { "source": "/portal/register", "destination": "/portal/register.html" },
+    { "source": "/portal", "destination": "/portal/index.html" }
+  ]
+}
